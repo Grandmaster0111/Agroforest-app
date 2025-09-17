@@ -3,10 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../models/crop.dart';
-import '../services/crop_service.dart';
+import 'package:myapp/gen_l10n/app_localizations.dart';
+import 'package:myapp/models/crop.dart';
+import 'package:myapp/services/crop_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

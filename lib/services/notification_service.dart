@@ -8,17 +8,12 @@ class NotificationService {
     await _firebaseMessaging.requestPermission();
 
     // Get the FCM token for this device
-    final fcmToken = await _firebaseMessaging.getToken();
-    print('FCM Token: $fcmToken');
+    await _firebaseMessaging.getToken();
+    // TODO: Send this token to your server
 
     // Handle incoming messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
-
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-      }
+      // TODO: Handle the incoming message
     });
   }
 }
