@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Flutter application provides a smart irrigation solution for farmers. It displays real-time sensor data from a farm, including soil moisture, temperature, humidity, and water tank levels. The app also features a Crop Intelligence Module that provides irrigation recommendations, manual override controls, and water tank monitoring.
+This Flutter application provides a smart irrigation solution for farmers. It displays real-time sensor data, provides irrigation recommendations, offers manual controls, monitors water tank levels, and sends proactive alerts.
 
 ## Features
 
@@ -26,10 +26,7 @@ This Flutter application provides a smart irrigation solution for farmers. It di
 
 *   **Crop Selection:** A dropdown menu allows farmers to select the crop they are growing.
 *   **Crop Database:** A local database (currently a static list in `CropService`) stores the ideal moisture range for each crop.
-*   **Intelligent Irrigation Advice:** The app checks the current soil moisture against the selected crop's ideal range and provides one of the following recommendations:
-    *   "Soil is dry for [Crop Name] – irrigation required" (in red)
-    *   "Soil moisture is optimal for [Crop Name]" (in green)
-    *   "Soil is wet for [Crop Name] – no irrigation needed" (in blue)
+*   **Intelligent Irrigation Advice:** The app checks the current soil moisture against the selected crop's ideal range and provides irrigation advice.
 
 ### Weather Forecast
 
@@ -43,13 +40,21 @@ This Flutter application provides a smart irrigation solution for farmers. It di
 *   **Manual Override:** In manual mode, a button allows the user to turn the water valve `ON` or `OFF` directly.
 *   **Timer (Placeholder):** A button is included as a placeholder for future timer/scheduling functionality.
 
+### Alerts & Notifications
+
+*   **Push Notifications:** The app is configured to receive push notifications via Firebase Cloud Messaging (FCM).
+*   **Backend Logic (Cloud Functions):** Placeholder Cloud Functions are provided to send alerts for:
+    *   Critically low soil moisture.
+    *   Low water tank levels.
+    *   Weather-based irrigation skips (e.g., rain predicted).
+
 ## Design
 
 *   **UI Framework:** The app is built with Flutter and uses Material Design components.
-*   **Layout:** The main screen uses a `SingleChildScrollView` to ensure the content is scrollable and avoids overflow errors.
-*   **Cards:** The sensor data, crop selection, and status are displayed in `Card` widgets for a clean, organized look.
-*   **Color-Coded Status:** The status card is color-coded to provide a quick visual indication of the irrigation status.
+*   **Layout:** The main screen uses a `SingleChildScrollView` to ensure the content is scrollable.
+*   **Cards:** Data and controls are organized in `Card` widgets for a clean look.
+*   **Color-Coded Status:** Status cards use color to provide quick visual feedback.
 
 ## Current Plan
 
-*   **Implement Water Tank Monitoring:** Enhance the UI to include a progress bar for the water tank level and add a new status card for low/overflow alerts and water-saving suggestions.
+*   **Implement Alerts & Notifications:** Configure the Flutter app to receive push notifications and create placeholder Cloud Functions (`functions/index.js`) for the backend alert logic.
