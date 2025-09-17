@@ -15,9 +15,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Stream<DocumentSnapshot> _sensorDataStream;
+  late Stream<DocumentSnapshot> _controlStream;
+
   String _weatherForecast = 'Loading...';
   late List<Crop> _crops;
   Crop? _selectedCrop;
+
+  bool _isAutoMode = true;
+  bool _isValveOn = false;
 
   @override
   void initState() {
@@ -25,6 +30,10 @@ class _HomeScreenState extends State<HomeScreen> {
     _sensorDataStream = FirebaseFirestore.instance
         .collection('sensor_data')
         .doc('latest')
+        .snapshots();
+    _controlStream = FirebaseFirestore.instance
+        .collection('irrigation_control')
+        .doc('settings')
         .snapshots();
     _fetchWeatherForecast();
     _crops = CropService.getCrops();
@@ -34,22 +43,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _fetchWeatherForecast() async {
-    // 1. Go to https://www.weatherapi.com/ to get a free API key.
-    // 2. Replace 'YOUR_API_KEY' with the key you get from the website.
     final apiKey = '7939e11061f2426bb66133641251709';
 
-    if (apiKey == '7939e11061f2426bb66133641251709') {
-      if (mounted) {
-        setState(() {
-          _weatherForecast = 'Please add a valid WeatherAPI.com API key.';
-        });
-      }
-      return;
-    }
-
-    // Using the same coordinates as the previous placeholder (latitude,longitude)
     const location = '33.74,-84.39';
-    final url = 'https://api.weatherapi.com/v1/current.json?key=$apiKey&q=$location';
+    final url =
+        'https://api.weatherapi.com/v1/current.json?key=$apiKey&q=$location';
 
     try {
       final response = await http.get(Uri.parse(url));
@@ -96,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (!snapshot.hasData || !snapshot.data!.exists) {
             return const Center(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(16.0),
                 child: Text(
                   'No sensor data available.',
                   textAlign: TextAlign.center,
@@ -109,9 +107,10 @@ class _HomeScreenState extends State<HomeScreen> {
           final data = snapshot.data!.data();
 
           if (data == null || data is! Map<String, dynamic>) {
-            return const Center(child: Text('Invalid data format from Firestore.'));
+            return const Center(
+                child: Text('Invalid data format from Firestore.'));
           }
-          
+
           final soilMoisture = data['soil_moisture'];
           final temperature = data['temperature'];
           final humidity = data['humidity'];
@@ -128,11 +127,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   _buildSensorCard('Soil Moisture', '${soilMoisture ?? 'N/A'}%'),
                   _buildSensorCard('Temperature', '${temperature ?? 'N/A'}°C'),
                   _buildSensorCard('Humidity', '${humidity ?? 'N/A'}%'),
-                  _buildSensorCard('Water Tank Level', '${waterTankLevel ?? 'N/A'}%'),
+                  _buildWaterTankCard(waterTankLevel),
+                  const SizedBox(height: 16.0),
+                  _buildWaterTankStatusCard(waterTankLevel),
                   const SizedBox(height: 16.0),
                   _buildStatusCard(soilMoisture, _selectedCrop),
                   const SizedBox(height: 16.0),
                   _buildWeatherCard(),
+                  const SizedBox(height: 16.0),
+                  _buildControlCard(),
                 ],
               ),
             ),
@@ -179,12 +182,87 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(title, style: const TextStyle(fontSize: 18.0)),
-            Text(value, style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+            Text(value,
+                style: const TextStyle(
+                    fontSize: 18.0, fontWeight: FontWeight.bold)),
           ],
         ),
       ),
     );
   }
+
+  Widget _buildWaterTankCard(dynamic waterTankLevel) {
+    double level = 0.0;
+    if (waterTankLevel is num) {
+      level = waterTankLevel.toDouble();
+    }
+
+    return Card(
+      elevation: 2.0,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Water Tank Level', style: TextStyle(fontSize: 18.0)),
+            const SizedBox(height: 8.0),
+            Row(
+              children: [
+                Expanded(
+                  child: LinearProgressIndicator(
+                    value: level / 100,
+                    minHeight: 10.0,
+                  ),
+                ),
+                const SizedBox(width: 8.0),
+                Text('${level.toStringAsFixed(1)}%', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWaterTankStatusCard(dynamic waterTankLevel) {
+    double level = 0.0;
+    if (waterTankLevel is num) {
+      level = waterTankLevel.toDouble();
+    }
+
+    String status;
+    Color statusColor;
+
+    if (level < 20) {
+      status = 'Water tank is low. Consider water-saving practices.';
+      statusColor = Colors.red;
+    } else if (level > 95) {
+      status = 'Water tank is almost full.';
+      statusColor = Colors.yellow;
+    } else {
+      status = 'Water tank level is optimal.';
+      statusColor = Colors.green;
+    }
+
+    return Card(
+      elevation: 2.0,
+      color: statusColor,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Text(
+            status,
+            style: const TextStyle(
+                fontSize: 18.0,
+                color: Colors.white,
+                fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
+
 
   Widget _buildStatusCard(dynamic soilMoisture, Crop? selectedCrop) {
     String status;
@@ -221,7 +299,10 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Center(
           child: Text(
             status,
-            style: const TextStyle(fontSize: 18.0, color: Colors.white, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+                fontSize: 18.0,
+                color: Colors.white,
+                fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
         ),
@@ -237,12 +318,81 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Weather Forecast', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+            const Text('Weather Forecast',
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8.0),
             Text(_weatherForecast, style: const TextStyle(fontSize: 16.0)),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildControlCard() {
+    return StreamBuilder<DocumentSnapshot>(
+      stream: _controlStream,
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data!.exists) {
+          final controlData = snapshot.data!.data() as Map<String, dynamic>;
+          _isAutoMode = controlData['isAutoMode'] ?? true;
+          _isValveOn = controlData['isValveOn'] ?? false;
+        }
+
+        return Card(
+          elevation: 2.0,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Irrigation Control',
+                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Automatic Mode', style: TextStyle(fontSize: 16.0)),
+                    Switch(
+                      value: _isAutoMode,
+                      onChanged: (value) {
+                        setState(() {
+                          _isAutoMode = value;
+                        });
+                        FirebaseFirestore.instance
+                            .collection('irrigation_control')
+                            .doc('settings')
+                            .set({'isAutoMode': value}, SetOptions(merge: true));
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8.0),
+                ElevatedButton(
+                  onPressed: _isAutoMode
+                      ? null
+                      : () {
+                          setState(() {
+                            _isValveOn = !_isValveOn;
+                          });
+                          FirebaseFirestore.instance
+                              .collection('irrigation_control')
+                              .doc('settings')
+                              .set({'isValveOn': _isValveOn}, SetOptions(merge: true));
+                        },
+                  child: Text(_isValveOn ? 'Turn Valve OFF' : 'Turn Valve ON'),
+                ),
+                const SizedBox(height: 8.0),
+                ElevatedButton(
+                  onPressed: () {
+                    // Placeholder for timer functionality
+                  },
+                  child: const Text('Set Timer'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

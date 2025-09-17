@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Flutter application provides a smart irrigation solution for farmers. It displays real-time sensor data from a farm, including soil moisture, temperature, humidity, and water tank levels. The app also features a Crop Intelligence Module that provides irrigation recommendations based on the selected crop.
+This Flutter application provides a smart irrigation solution for farmers. It displays real-time sensor data from a farm, including soil moisture, temperature, humidity, and water tank levels. The app also features a Crop Intelligence Module that provides irrigation recommendations, manual override controls, and water tank monitoring.
 
 ## Features
 
@@ -13,7 +13,14 @@ This Flutter application provides a smart irrigation solution for farmers. It di
     *   Soil Moisture (%)
     *   Temperature (°C)
     *   Humidity (%)
-    *   Water Tank Level (%)
+
+### Rainwater Harvesting & Water Tank Monitoring
+
+*   **Visual Water Level:** The current water tank level is displayed with a percentage and a visual progress bar.
+*   **Status Alerts:** A color-coded card provides alerts based on the water level:
+    *   **Low (< 20%):** A red alert warns that the tank is low and suggests water-saving practices.
+    *   **Overflowing (> 95%):** A yellow alert warns that the tank is nearly full.
+    *   **Optimal (20-95%):** A green card indicates the water level is optimal.
 
 ### Crop Intelligence Module
 
@@ -29,6 +36,13 @@ This Flutter application provides a smart irrigation solution for farmers. It di
 *   **Weather Display:** The app fetches and displays the current weather conditions and temperature from WeatherAPI.com.
 *   **API Integration:** The app uses the WeatherAPI.com API to get real-time weather data.
 
+### Irrigation Control
+
+*   **Firestore Integration:** App state is synchronized with the `irrigation_control` document in Firestore.
+*   **Mode Selection:** A toggle switch allows the user to switch between `Automatic` and `Manual` irrigation modes.
+*   **Manual Override:** In manual mode, a button allows the user to turn the water valve `ON` or `OFF` directly.
+*   **Timer (Placeholder):** A button is included as a placeholder for future timer/scheduling functionality.
+
 ## Design
 
 *   **UI Framework:** The app is built with Flutter and uses Material Design components.
@@ -38,4 +52,4 @@ This Flutter application provides a smart irrigation solution for farmers. It di
 
 ## Current Plan
 
-*   **Integrate WeatherAPI.com:** The app has been updated to use the WeatherAPI.com API for real-time weather data. The user needs to add their own API key to enable this feature.
+*   **Implement Water Tank Monitoring:** Enhance the UI to include a progress bar for the water tank level and add a new status card for low/overflow alerts and water-saving suggestions.
