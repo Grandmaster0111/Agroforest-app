@@ -26,8 +26,8 @@ This Flutter application provides a smart irrigation solution for farmers. It di
 
 ### Weather Forecast
 
-*   **Weather Display:** The app fetches and displays a 3-day weather forecast.
-*   **API Integration:** The weather forecast is fetched from a weather API (currently a placeholder).
+*   **Weather Display:** The app fetches and displays the current weather conditions and temperature from WeatherAPI.com.
+*   **API Integration:** The app uses the WeatherAPI.com API to get real-time weather data.
 
 ## Design
 
@@ -38,4 +38,4 @@ This Flutter application provides a smart irrigation solution for farmers. It di
 
 ## Current Plan
 
-*   **Fix Overflow Error:** The last completed task was to fix the UI overflow error by wrapping the main `Column` in a `SingleChildScrollView`.
+*   **Integrate WeatherAPI.com:** The app has been updated to use the WeatherAPI.com API for real-time weather data. The user needs to add their own API key to enable this feature.

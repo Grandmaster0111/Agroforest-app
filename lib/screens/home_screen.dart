@@ -34,26 +34,43 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _fetchWeatherForecast() async {
-    // Replace with your actual weather API endpoint and key
-    final apiKey = 'YOUR_API_KEY'; // TODO: Replace with a valid API key
-    if (apiKey == 'YOUR_API_KEY') {
+    // 1. Go to https://www.weatherapi.com/ to get a free API key.
+    // 2. Replace 'YOUR_API_KEY' with the key you get from the website.
+    final apiKey = '7939e11061f2426bb66133641251709';
+
+    if (apiKey == '7939e11061f2426bb66133641251709') {
       if (mounted) {
         setState(() {
-          _weatherForecast = 'Please replace with a valid Weather API key.';
+          _weatherForecast = 'Please add a valid WeatherAPI.com API key.';
         });
       }
       return;
     }
-    final response = await http.get(Uri.parse('https://api.weather.com/v1/forecast/daily/3day.json?apiKey=$apiKey&geocode=33.74,-84.39&format=json&units=m'));
 
-    if (mounted) {
-      if (response.statusCode == 200) {
+    // Using the same coordinates as the previous placeholder (latitude,longitude)
+    const location = '33.74,-84.39';
+    final url = 'https://api.weatherapi.com/v1/current.json?key=$apiKey&q=$location';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (mounted) {
+        if (response.statusCode == 200) {
+          final weatherData = json.decode(response.body);
+          final description = weatherData['current']['condition']['text'];
+          final temperature = weatherData['current']['temp_c'];
+          setState(() {
+            _weatherForecast = '$description ($temperature°C)';
+          });
+        } else {
+          setState(() {
+            _weatherForecast = 'Failed to load weather data.';
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
         setState(() {
-          _weatherForecast = json.decode(response.body)['forecasts'][0]['narrative'];
-        });
-      } else {
-        setState(() {
-          _weatherForecast = 'Failed to load weather data.';
+          _weatherForecast = 'Error fetching weather data.';
         });
       }
     }
@@ -79,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (!snapshot.hasData || !snapshot.data!.exists) {
             return const Center(
               child: Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Text(
                   'No sensor data available.',
                   textAlign: TextAlign.center,
