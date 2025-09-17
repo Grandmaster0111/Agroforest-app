@@ -1,69 +1,27 @@
-# Project Blueprint: Smart Irrigation App
+# Smart Irrigation App Blueprint
 
 ## Overview
 
-This Flutter application provides a smart irrigation solution for farmers. It displays real-time sensor data, provides irrigation recommendations, offers manual controls, monitors water tank levels, and sends proactive alerts.
+The Smart Irrigation app is a Flutter-based mobile application designed to provide users with a smart and efficient way to manage their irrigation systems. The app connects to a Firebase backend to fetch real-time sensor data, provide weather forecasts, and allow users to control their irrigation system remotely.
 
 ## Features
 
-### Real-time Sensor Data
-
-*   **Real-time Updates:** The app streams data from a Cloud Firestore database and displays it in real-time.
-*   **Sensor Cards:** The following sensor data is displayed in individual cards:
-    *   Soil Moisture (%)
-    *   Temperature (°C)
-    *   Humidity (%)
-
-### Rainwater Harvesting & Water Tank Monitoring
-
-*   **Visual Water Level:** The current water tank level is displayed with a percentage and a visual progress bar.
-*   **Status Alerts:** A color-coded card provides alerts based on the water level:
-    *   **Low (< 20%):** A red alert warns that the tank is low and suggests water-saving practices.
-    *   **Overflowing (> 95%):** A yellow alert warns that the tank is nearly full.
-    *   **Optimal (20-95%):** A green card indicates the water level is optimal.
-
-### Crop Intelligence Module
-
-*   **Crop Selection:** A dropdown menu allows farmers to select the crop they are growing.
-*   **Crop Database:** A local database (currently a static list in `CropService`) stores the ideal moisture range for each crop.
-*   **Intelligent Irrigation Advice:** The app checks the current soil moisture against the selected crop's ideal range and provides irrigation advice.
-
-### Weather Forecast
-
-*   **Weather Display:** The app fetches and displays the current weather conditions and temperature from WeatherAPI.com.
-*   **API Integration:** The app uses the WeatherAPI.com API to get real-time weather data.
-
-### Irrigation Control
-
-*   **Firestore Integration:** App state is synchronized with the `irrigation_control` document in Firestore.
-*   **Mode Selection:** A toggle switch allows the user to switch between `Automatic` and `Manual` irrigation modes.
-*   **Manual Override:** In manual mode, a button allows the user to turn the water valve `ON` or `OFF` directly.
-*   **Timer (Placeholder):** A button is included as a placeholder for future timer/scheduling functionality.
-
-### Alerts & Notifications
-
-*   **Push Notifications:** The app is configured to receive push notifications via Firebase Cloud Messaging (FCM).
-*   **Backend Logic (Cloud Functions):** Placeholder Cloud Functions are provided to send alerts for:
-    *   Critically low soil moisture.
-    *   Low water tank levels.
-    *   Weather-based irrigation skips (e.g., rain predicted).
-
-### Analytics & History
-
-*   **Data Logging:** The backend will be updated to log historical data for sensor readings and irrigation events.
-*   **Charts:** A new analytics screen will display charts for:
-    *   Moisture trends over time (line chart).
-    *   Irrigation cycles (bar chart).
-    *   Water tank level trends (line chart).
+*   **Real-time Sensor Data:** The app displays real-time data from various sensors, including soil moisture, temperature, and humidity.
+*   **Water Tank Level:** The app shows the current water tank level and provides a visual representation of the tank's status.
+*   **Weather Forecast:** The app fetches and displays the current weather forecast to help users make informed decisions about their irrigation schedule.
+*   **Irrigation Control:** Users can manually control the irrigation valve or switch to an automatic mode that irrigates based on the soil moisture level and the selected crop.
+*   **Crop-specific Advice:** The app provides irrigation advice based on the selected crop, ensuring that each plant receives the optimal amount of water.
+*   **Analytics:** The app provides historical data and charts for soil moisture, irrigation cycles, and water tank levels, allowing users to track trends and optimize their irrigation strategy.
+*   **Multi-language Support:** The app supports English, Hindi, and Nepali, making it accessible to a wider audience.
 
 ## Design
 
-*   **UI Framework:** The app is built with Flutter and uses Material Design components.
-*   **Navigation:** The app will use a `BottomNavigationBar` to switch between the Home and Analytics screens.
-*   **Layout:** The main screen uses a `SingleChildScrollView` to ensure the content is scrollable.
-*   **Cards:** Data and controls are organized in `Card` widgets for a clean look.
-*   **Color-Coded Status:** Status cards use color to provide quick visual feedback.
+The app follows the Material Design guidelines, providing a clean and intuitive user interface. It uses a combination of cards, icons, and charts to present information in a clear and concise manner. The app is designed to be responsive and work seamlessly on both Android and iOS devices.
 
-## Current Plan
+## Implementation
 
-*   **Implement Analytics & History:** Add the `fl_chart` package, create a new `AnalyticsScreen`, refactor the main app to use a `BottomNavigationBar`, update the backend to log historical data, and build the charts.
+*   **Frontend:** The app is built using Flutter, a cross-platform framework for building mobile applications.
+*   **Backend:** The app uses Firebase as its backend, leveraging Firestore for data storage and Firebase Messaging for push notifications.
+*   **State Management:** The app uses the `provider` package for state management, allowing for a clear separation of concerns and a predictable data flow.
+*   **Internationalization:** The app uses the `flutter_localizations` and `intl` packages to provide multi-language support.
+*   **Charting:** The app uses the `fl_chart` package to display historical data in the form of charts.

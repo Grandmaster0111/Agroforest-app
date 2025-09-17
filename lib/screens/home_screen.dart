@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../models/crop.dart';
 import '../services/crop_service.dart';
 
@@ -77,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Real-time Sensor Data')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.realTimeSensorData)),
       body: StreamBuilder<DocumentSnapshot>(
         stream: _sensorDataStream,
         builder: (context, snapshot) {
@@ -124,11 +126,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   _buildCropDropdown(),
                   const SizedBox(height: 16.0),
                   _buildSensorCard(
-                    'Soil Moisture',
+                    AppLocalizations.of(context)!.soilMoisture,
                     '${soilMoisture ?? 'N/A'}%',
+                    Icons.wb_sunny,
                   ),
-                  _buildSensorCard('Temperature', '${temperature ?? 'N/A'}°C'),
-                  _buildSensorCard('Humidity', '${humidity ?? 'N/A'}%'),
+                  _buildSensorCard(AppLocalizations.of(context)!.temperature, '${temperature ?? 'N/A'}°C',
+                      Icons.thermostat),
+                  _buildSensorCard(AppLocalizations.of(context)!.humidity, '${humidity ?? 'N/A'}%',
+                      Icons.water_drop),
                   _buildWaterTankCard(waterTankLevel),
                   const SizedBox(height: 16.0),
                   _buildWaterTankStatusCard(waterTankLevel),
@@ -175,21 +180,27 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSensorCard(String title, String value) {
+  Widget _buildSensorCard(String title, String value, IconData icon) {
     return Card(
       elevation: 2.0,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(title, style: const TextStyle(fontSize: 18.0)),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
+            Icon(icon, size: 40, color: Theme.of(context).primaryColor),
+            const SizedBox(width: 16.0),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontSize: 18.0)),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -210,7 +221,14 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Water Tank Level', style: TextStyle(fontSize: 18.0)),
+            Row(
+              children: [
+                const Icon(Icons.storage, size: 40, color: Colors.blue),
+                const SizedBox(width: 16.0),
+                Text(AppLocalizations.of(context)!.waterTankLevel,
+                    style: const TextStyle(fontSize: 18.0)),
+              ],
+            ),
             const SizedBox(height: 8.0),
             Row(
               children: [
@@ -246,13 +264,13 @@ class _HomeScreenState extends State<HomeScreen> {
     Color statusColor;
 
     if (level < 20) {
-      status = 'Water tank is low. Consider water-saving practices.';
+      status = AppLocalizations.of(context)!.waterTankLow;
       statusColor = Colors.red;
     } else if (level > 95) {
-      status = 'Water tank is almost full.';
+      status = AppLocalizations.of(context)!.waterTankFull;
       statusColor = Colors.yellow;
     } else {
-      status = 'Water tank level is optimal.';
+      status = AppLocalizations.of(context)!.waterTankOptimal;
       statusColor = Colors.green;
     }
 
@@ -289,17 +307,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (selectedCrop != null) {
       if (moistureValue < selectedCrop.minMoisture) {
-        status = 'Soil is dry for ${selectedCrop.name} – irrigation required';
+        status = AppLocalizations.of(context)!.soilDry(selectedCrop.name);
         statusColor = Colors.red;
       } else if (moistureValue > selectedCrop.maxMoisture) {
-        status = 'Soil is wet for ${selectedCrop.name} – no irrigation needed';
+        status = AppLocalizations.of(context)!.soilWet(selectedCrop.name);
         statusColor = Colors.blue;
       } else {
-        status = 'Soil moisture is optimal for ${selectedCrop.name}';
+        status = AppLocalizations.of(context)!.soilOptimal(selectedCrop.name);
         statusColor = Colors.green;
       }
     } else {
-      status = 'Select a crop to see irrigation advice';
+      status = AppLocalizations.of(context)!.selectCrop;
       statusColor = Colors.grey;
     }
 
@@ -331,9 +349,15 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Weather Forecast',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            Row(
+              children: [
+                const Icon(Icons.cloud, size: 40, color: Colors.blueAccent),
+                const SizedBox(width: 16.0),
+                Text(
+                  AppLocalizations.of(context)!.weatherForecast,
+                  style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
             const SizedBox(height: 8.0),
             Text(_weatherForecast, style: const TextStyle(fontSize: 16.0)),
@@ -360,17 +384,17 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Irrigation Control',
-                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                Text(
+                  AppLocalizations.of(context)!.irrigationControl,
+                  style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Automatic Mode',
-                      style: TextStyle(fontSize: 16.0),
+                    Text(
+                      AppLocalizations.of(context)!.automaticMode,
+                      style: const TextStyle(fontSize: 16.0),
                     ),
                     Switch(
                       value: _isAutoMode,
@@ -389,7 +413,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 const SizedBox(height: 8.0),
-                ElevatedButton(
+                ElevatedButton.icon(
                   onPressed: _isAutoMode
                       ? null
                       : () {
@@ -403,14 +427,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                 'isValveOn': _isValveOn,
                               }, SetOptions(merge: true));
                         },
-                  child: Text(_isValveOn ? 'Turn Valve OFF' : 'Turn Valve ON'),
+                  icon: Icon(_isValveOn ? Icons.power_off : Icons.power),
+                  label: Text(_isValveOn
+                      ? AppLocalizations.of(context)!.turnValveOff
+                      : AppLocalizations.of(context)!.turnValveOn),
                 ),
                 const SizedBox(height: 8.0),
-                ElevatedButton(
+                ElevatedButton.icon(
                   onPressed: () {
                     // Placeholder for timer functionality
                   },
-                  child: const Text('Set Timer'),
+                  icon: const Icon(Icons.timer),
+                  label: Text(AppLocalizations.of(context)!.setTimer),
                 ),
               ],
             ),

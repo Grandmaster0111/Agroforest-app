@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AnalyticsScreen extends StatelessWidget {
   const AnalyticsScreen({super.key});
@@ -8,16 +9,16 @@ class AnalyticsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Analytics')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.analytics)),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildChartCard('Moisture Trends', _buildMoistureChart()),
-              _buildChartCard('Irrigation Cycles', _buildIrrigationChart()),
-              _buildChartCard('Tank Level Trends', _buildTankLevelChart()),
+              _buildChartCard(AppLocalizations.of(context)!.moistureTrends, _buildMoistureChart()),
+              _buildChartCard(AppLocalizations.of(context)!.irrigationCycles, _buildIrrigationChart()),
+              _buildChartCard(AppLocalizations.of(context)!.tankLevelTrends, _buildTankLevelChart()),
             ],
           ),
         ),
