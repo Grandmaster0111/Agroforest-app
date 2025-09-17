@@ -77,9 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Real-time Sensor Data'),
-      ),
+      appBar: AppBar(title: const Text('Real-time Sensor Data')),
       body: StreamBuilder<DocumentSnapshot>(
         stream: _sensorDataStream,
         builder: (context, snapshot) {
@@ -108,7 +106,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
           if (data == null || data is! Map<String, dynamic>) {
             return const Center(
-                child: Text('Invalid data format from Firestore.'));
+              child: Text('Invalid data format from Firestore.'),
+            );
           }
 
           final soilMoisture = data['soil_moisture'];
@@ -124,7 +123,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   _buildCropDropdown(),
                   const SizedBox(height: 16.0),
-                  _buildSensorCard('Soil Moisture', '${soilMoisture ?? 'N/A'}%'),
+                  _buildSensorCard(
+                    'Soil Moisture',
+                    '${soilMoisture ?? 'N/A'}%',
+                  ),
                   _buildSensorCard('Temperature', '${temperature ?? 'N/A'}°C'),
                   _buildSensorCard('Humidity', '${humidity ?? 'N/A'}%'),
                   _buildWaterTankCard(waterTankLevel),
@@ -182,9 +184,13 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(title, style: const TextStyle(fontSize: 18.0)),
-            Text(value,
-                style: const TextStyle(
-                    fontSize: 18.0, fontWeight: FontWeight.bold)),
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
       ),
@@ -215,7 +221,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 const SizedBox(width: 8.0),
-                Text('${level.toStringAsFixed(1)}%', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                Text(
+                  '${level.toStringAsFixed(1)}%',
+                  style: const TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
           ],
@@ -253,16 +265,16 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Text(
             status,
             style: const TextStyle(
-                fontSize: 18.0,
-                color: Colors.white,
-                fontWeight: FontWeight.bold),
+              fontSize: 18.0,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
             textAlign: TextAlign.center,
           ),
         ),
       ),
     );
   }
-
 
   Widget _buildStatusCard(dynamic soilMoisture, Crop? selectedCrop) {
     String status;
@@ -300,9 +312,10 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Text(
             status,
             style: const TextStyle(
-                fontSize: 18.0,
-                color: Colors.white,
-                fontWeight: FontWeight.bold),
+              fontSize: 18.0,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
             textAlign: TextAlign.center,
           ),
         ),
@@ -318,8 +331,10 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Weather Forecast',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+            const Text(
+              'Weather Forecast',
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8.0),
             Text(_weatherForecast, style: const TextStyle(fontSize: 16.0)),
           ],
@@ -345,13 +360,18 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Irrigation Control',
-                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                const Text(
+                  'Irrigation Control',
+                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 8.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Automatic Mode', style: TextStyle(fontSize: 16.0)),
+                    const Text(
+                      'Automatic Mode',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
                     Switch(
                       value: _isAutoMode,
                       onChanged: (value) {
@@ -361,7 +381,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         FirebaseFirestore.instance
                             .collection('irrigation_control')
                             .doc('settings')
-                            .set({'isAutoMode': value}, SetOptions(merge: true));
+                            .set({
+                              'isAutoMode': value,
+                            }, SetOptions(merge: true));
                       },
                     ),
                   ],
@@ -377,7 +399,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           FirebaseFirestore.instance
                               .collection('irrigation_control')
                               .doc('settings')
-                              .set({'isValveOn': _isValveOn}, SetOptions(merge: true));
+                              .set({
+                                'isValveOn': _isValveOn,
+                              }, SetOptions(merge: true));
                         },
                   child: Text(_isValveOn ? 'Turn Valve OFF' : 'Turn Valve ON'),
                 ),

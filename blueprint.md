@@ -48,13 +48,22 @@ This Flutter application provides a smart irrigation solution for farmers. It di
     *   Low water tank levels.
     *   Weather-based irrigation skips (e.g., rain predicted).
 
+### Analytics & History
+
+*   **Data Logging:** The backend will be updated to log historical data for sensor readings and irrigation events.
+*   **Charts:** A new analytics screen will display charts for:
+    *   Moisture trends over time (line chart).
+    *   Irrigation cycles (bar chart).
+    *   Water tank level trends (line chart).
+
 ## Design
 
 *   **UI Framework:** The app is built with Flutter and uses Material Design components.
+*   **Navigation:** The app will use a `BottomNavigationBar` to switch between the Home and Analytics screens.
 *   **Layout:** The main screen uses a `SingleChildScrollView` to ensure the content is scrollable.
 *   **Cards:** Data and controls are organized in `Card` widgets for a clean look.
 *   **Color-Coded Status:** Status cards use color to provide quick visual feedback.
 
 ## Current Plan
 
-*   **Implement Alerts & Notifications:** Configure the Flutter app to receive push notifications and create placeholder Cloud Functions (`functions/index.js`) for the backend alert logic.
+*   **Implement Analytics & History:** Add the `fl_chart` package, create a new `AnalyticsScreen`, refactor the main app to use a `BottomNavigationBar`, update the backend to log historical data, and build the charts.

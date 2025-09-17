@@ -3,13 +3,14 @@ const admin = require("firebase-admin");
 
 admin.initializeApp();
 
+// --- Alerts & Notifications ---
+
 exports.soilMoistureAlert = functions.firestore
     .document("sensor_data/latest")
     .onUpdate(async (change, context) => {
       const newValue = change.after.data();
       const previousValue = change.before.data();
 
-      // Check if soil moisture is critically low
       if (newValue.soil_moisture < 20 && previousValue.soil_moisture >= 20) {
         const payload = {
           notification: {
@@ -17,8 +18,6 @@ exports.soilMoistureAlert = functions.firestore
             body: "Soil moisture is critically low, irrigation started automatically.",
           },
         };
-
-        // Send a notification to a topic
         return admin.messaging().sendToTopic("all", payload);
       }
       return null;
@@ -30,7 +29,6 @@ exports.waterTankAlert = functions.firestore
       const newValue = change.after.data();
       const previousValue = change.before.data();
 
-      // Check if water tank is below 20%
       if (newValue.water_tank_level < 20 && previousValue.water_tank_level >= 20) {
         const payload = {
           notification: {
@@ -38,8 +36,6 @@ exports.waterTankAlert = functions.firestore
             body: "Water tank below 20% – refill required.",
           },
         };
-
-        // Send a notification to a topic
         return admin.messaging().sendToTopic("all", payload);
       }
       return null;
@@ -48,9 +44,7 @@ exports.waterTankAlert = functions.firestore
 exports.weatherBasedIrrigation = functions.pubsub
     .schedule("every 1 hours")
     .onRun(async (context) => {
-      // Replace with your actual weather API call logic
-      const rainPredicted = true; 
-
+      const rainPredicted = true; // Replace with actual weather API call
       if (rainPredicted) {
         const payload = {
           notification: {
@@ -58,9 +52,34 @@ exports.weatherBasedIrrigation = functions.pubsub
             body: "Rain predicted, skipping irrigation.",
           },
         };
-
-        // Send a notification to a topic
         return admin.messaging().sendToTopic("all", payload);
       }
       return null;
+    });
+
+// --- Analytics & History ---
+
+exports.logSensorData = functions.firestore
+    .document("sensor_data/latest")
+    .onUpdate(async (change, context) => {
+        const newData = change.after.data();
+        return admin.firestore().collection("sensor_history").add({
+            ...newData,
+            timestamp: admin.firestore.FieldValue.serverTimestamp(),
+        });
+    });
+
+exports.logIrrigationEvent = functions.firestore
+    .document("irrigation_control/latest")
+    .onUpdate(async (change, context) => {
+        const newValue = change.after.data();
+        const previousValue = change.before.data();
+
+        if (newValue.valve_on !== previousValue.valve_on) {
+            return admin.firestore().collection("irrigation_history").add({
+                valve_on: newValue.valve_on,
+                timestamp: admin.firestore.FieldValue.serverTimestamp(),
+            });
+        }
+        return null;
     });
