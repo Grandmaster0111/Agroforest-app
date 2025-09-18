@@ -88,30 +88,8 @@ lib/
 
 ---
 
-## Screenshots
-
-*(Add your app screenshots here to showcase your beautiful UI!)*
-
-| Light Mode | Dark Mode |
-| :---: | :---: |
-| ![Light Mode](https://via.placeholder.com/300x600.png?text=Light+Mode) | ![Dark Mode](https://via.placeholder.com/300x600.png?text=Dark+Mode) |
-
----
-
 ## Contributing
 
 Contributions are welcome! If you have any ideas, suggestions, or bug reports, please open an issue or submit a pull request.
 
 ---
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## Contact
-
-Your Name - [@your_twitter](https://twitter.com/your_twitter)
-
-Project Link: [https://github.com/your-username/myapp](https://github.com/your-username/myapp)
