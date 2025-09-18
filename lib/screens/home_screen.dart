@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _fetchWeatherForecast() async {
     // TODO: Replace with your own API key from https://www.weatherapi.com/
-    const apiKey = 'YOUR_API_KEY';
+    const apiKey = '7939e11061f2426bb66133641251709';
 
     const location = '33.74,-84.39';
     final url =
