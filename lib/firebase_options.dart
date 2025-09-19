@@ -72,5 +72,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'agroforest-20335.firebasestorage.app',
     iosBundleId: '9',
   );
-
 }
