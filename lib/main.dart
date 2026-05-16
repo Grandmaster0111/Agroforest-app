@@ -5,12 +5,21 @@ import './router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'auth_service.dart';
 import 'firebase_options.dart';
+import 'setup_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final configured = await DynamicFirebaseOptions.isConfigured();
+  if (!configured) {
+    runApp(const SetupApp());
+    return;
+  }
+
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+    options: await DynamicFirebaseOptions.currentPlatform,
   );
+
   runApp(
     MultiProvider(
       providers: [
