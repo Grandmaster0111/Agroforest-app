@@ -1,16 +1,39 @@
-# myapp
+# Agroforest App
 
-A new Flutter project.
+A **Flutter** web and mobile application for agroforestry management and land-use planning, backed by **Firebase**.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Agroforestry planning and resource management interface
+- Real-time data sync via **Firebase Firestore**
+- Firebase Authentication for secure accounts
+- Deployed as Flutter Web (also supports Android/iOS)
 
-A few resources to get you started if this is your first Flutter project:
+## Tech Stack
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Flutter (Dart) |
+| Database | Firebase Firestore |
+| Auth | Firebase Authentication |
+| Hosting | Firebase Hosting |
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Prerequisites
+
+- Flutter SDK 3.x — [flutter.dev](https://flutter.dev/docs/get-started/install)
+- Firebase CLI — `npm install -g firebase-tools`
+
+## Setup
+
+```bash
+flutter pub get
+flutterfire configure   # connect to your Firebase project
+flutter run -d chrome   # web
+flutter run             # mobile
+```
+
+## Deploy
+
+```bash
+flutter build web && firebase deploy
+```
